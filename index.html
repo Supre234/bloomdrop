@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bloomdrop — send a bouquet that never wilts</title>
+<meta name="description" content="Build a digital bouquet, add your thoughts, and send it to someone you love. Free, no sign-up.">
+<meta name="theme-color" content="#fff6ea">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💐</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <a class="logo" href="#" data-go="home" aria-label="bloomdrop home">bloom<span>drop</span></a>
+  <nav class="tabs" aria-label="Main">
+    <button data-go="home" class="tab">home</button>
+    <button data-go="make" class="tab">make</button>
+    <button data-go="garden" class="tab">garden</button>
+  </nav>
+  <button class="streak-pill" data-go="garden" title="Your daily streak">🔥 <b id="streakNum">1</b></button>
+</header>
+
+<main>
+  <!-- ───────────── HOME ───────────── -->
+  <section id="view-home" class="view">
+    <div class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">digital bouquets · zero wilting · free</p>
+        <h1>send flowers<br>that <em>never</em> get<br>left on read.</h1>
+        <p class="lede">build a bouquet, write what you actually feel, drop the link. takes about a minute, and nobody needs an account.</p>
+        <div class="cta-row">
+          <button class="btn primary big" data-go="make">make a bouquet</button>
+          <button class="btn ghost big" id="surpriseHome">surprise me 🎲</button>
+        </div>
+      </div>
+      <div class="hero-art" id="heroArt" aria-hidden="true"></div>
+    </div>
+
+    <h2 class="section-title">today on bloomdrop <span class="tag">resets at midnight</span></h2>
+    <div class="daily">
+      <article class="card daily-card c-pink">
+        <p class="card-label">bloom of the day</p>
+        <div class="daily-bloom">
+          <div id="dailyBloomArt"></div>
+          <div>
+            <h3 id="dailyBloomName"></h3>
+            <p id="dailyBloomMeans"></p>
+          </div>
+        </div>
+        <button class="btn small" id="dailyBloomBtn">start with this one</button>
+      </article>
+      <article class="card daily-card c-lime">
+        <p class="card-label">today's thought starter</p>
+        <p class="prompt-text" id="dailyPrompt"></p>
+        <button class="btn small" id="dailyPromptBtn">answer it with flowers</button>
+      </article>
+      <article class="card daily-card c-lilac">
+        <p class="card-label">your streak</p>
+        <p class="streak-big">🔥 <span id="streakBig">1</span> <small>day<span id="streakS">s</span></small></p>
+        <p id="nextUnlock" class="muted"></p>
+        <button class="btn small" data-go="garden">see my garden</button>
+      </article>
+    </div>
+
+    <h2 class="section-title">ready-made, just remix <span class="tag">tap to customise</span></h2>
+    <div class="presets" id="presets"></div>
+
+    <h2 class="section-title">how it works</h2>
+    <ol class="steps">
+      <li><b>1</b><span>pick your blooms, wrap and ribbon</span></li>
+      <li><b>2</b><span>write the note you've been meaning to send</span></li>
+      <li><b>3</b><span>share the link — they unwrap it on their phone</span></li>
+    </ol>
+  </section>
+
+  <!-- ───────────── MAKE ───────────── -->
+  <section id="view-make" class="view">
+    <div class="builder">
+      <div class="stage-col">
+        <div class="stage" id="stage">
+          <div id="preview" class="preview"></div>
+          <p class="stage-hint">tap a flower to change its colour</p>
+        </div>
+        <div class="chips" id="chips" aria-label="Flowers in your bouquet"></div>
+        <div class="stage-actions">
+          <button class="btn ghost small" id="shuffleBtn">surprise me 🎲</button>
+          <button class="btn ghost small" id="clearBtn">start over</button>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="card panel">
+          <h2><span class="num">1</span> pick your blooms <small id="stemCount"></small></h2>
+          <div class="palette" id="palette"></div>
+          <label class="check"><input type="checkbox" id="greenery"> add greenery</label>
+        </div>
+
+        <div class="card panel">
+          <h2><span class="num">2</span> wrap it</h2>
+          <div class="row">
+            <span class="row-label">style</span>
+            <div class="seg" id="wrapStyle">
+              <button data-v="0">paper</button>
+              <button data-v="1">hand-tied</button>
+            </div>
+          </div>
+          <div class="row" id="wrapColorRow">
+            <span class="row-label">paper</span>
+            <div class="swatches" id="wrapColor"></div>
+          </div>
+          <div class="row" id="wrapPatRow">
+            <span class="row-label">pattern</span>
+            <div class="seg" id="wrapPat">
+              <button data-v="0">plain</button>
+              <button data-v="1">dots</button>
+              <button data-v="2">stripes</button>
+            </div>
+          </div>
+          <div class="row">
+            <span class="row-label">ribbon</span>
+            <div class="swatches" id="ribbonColor"></div>
+          </div>
+          <div class="row">
+            <span class="row-label">backdrop</span>
+            <div class="swatches" id="bgColor"></div>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <h2><span class="num">3</span> say it</h2>
+          <div class="two">
+            <label>to<input id="toName" maxlength="30" placeholder="their name" autocomplete="off"></label>
+            <label>from<input id="fromName" maxlength="30" placeholder="you" autocomplete="off"></label>
+          </div>
+          <label>your note
+            <textarea id="msg" maxlength="280" rows="4" placeholder="say the thing you'd normally just think…"></textarea>
+          </label>
+          <div class="msg-foot">
+            <div class="starters" id="starters"></div>
+            <span class="count" id="msgCount">0/280</span>
+          </div>
+        </div>
+
+        <button class="btn primary big wide" id="sendBtn">wrap it up &amp; send 💌</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────── GARDEN ───────────── -->
+  <section id="view-garden" class="view">
+    <h1 class="page-title">your garden</h1>
+    <p class="lede">everything you've sent and received lives here, on this device.</p>
+
+    <div class="stats">
+      <div class="card stat c-lilac"><b id="gStreak">1</b><span>day streak</span></div>
+      <div class="card stat c-pink"><b id="gSent">0</b><span>sent</span></div>
+      <div class="card stat c-lime"><b id="gRecv">0</b><span>received</span></div>
+    </div>
+
+    <h2 class="section-title">rare blooms <span class="tag">unlock by showing up</span></h2>
+    <div class="unlocks" id="unlocks"></div>
+
+    <h2 class="section-title">dates to remember <span class="tag">never miss a bday again</span></h2>
+    <div class="card panel">
+      <form id="dateForm" class="date-form">
+        <input id="dateName" maxlength="30" placeholder="whose day?" required>
+        <input id="dateWhen" type="date" required aria-label="Date">
+        <button class="btn small primary">add</button>
+      </form>
+      <ul class="dates" id="dates"></ul>
+    </div>
+
+    <h2 class="section-title">received</h2>
+    <div class="shelf" id="recvShelf"></div>
+
+    <h2 class="section-title">sent</h2>
+    <div class="shelf" id="sentShelf"></div>
+  </section>
+</main>
+
+<footer class="foot">made with 💐 · your bouquets live in the link, not on a server</footer>
+
+<!-- ───────────── RECEIVE ───────────── -->
+<div id="receive" class="receive" hidden>
+  <div class="receive-inner">
+    <div id="gift" class="gift">
+      <p class="gift-to" id="giftTo"></p>
+      <button class="envelope" id="unwrapBtn" aria-label="Unwrap your bouquet">
+        <span class="env-flap"></span>
+        <span class="env-heart">💌</span>
+      </button>
+      <p class="gift-hint">tap to unwrap</p>
+    </div>
+    <div id="opened" class="opened" hidden>
+      <div id="recvArt" class="recv-art"></div>
+      <div class="note" id="recvNote">
+        <p class="note-to" id="noteTo"></p>
+        <p class="note-msg" id="noteMsg"></p>
+        <p class="note-from" id="noteFrom"></p>
+      </div>
+      <div class="recv-actions">
+        <button class="btn primary" id="sendBackBtn">send one back 💐</button>
+        <button class="btn" id="recvSaveBtn">save pic</button>
+        <button class="btn ghost" id="recvCloseBtn">my garden</button>
+      </div>
+    </div>
+  </div>
+  <div id="confetti" aria-hidden="true"></div>
+</div>
+
+<!-- ───────────── SHARE ───────────── -->
+<dialog id="shareDlg" class="dlg">
+  <h2>it's wrapped 🎀</h2>
+  <p class="muted">send this link — they'll unwrap it when they open it.</p>
+  <input id="shareLink" readonly aria-label="Share link">
+  <div class="share-grid">
+    <button class="btn primary" id="copyBtn">copy link</button>
+    <button class="btn" id="nativeShareBtn">share…</button>
+    <a class="btn" id="waBtn" target="_blank" rel="noopener">whatsapp</a>
+    <button class="btn" id="pngBtn">save pic</button>
+  </div>
+  <button class="btn ghost small" id="previewBtn">preview what they'll see</button>
+  <button class="dlg-x" id="shareClose" aria-label="Close">✕</button>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
