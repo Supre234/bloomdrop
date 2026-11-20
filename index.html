@@ -83,23 +83,33 @@
       <div class="stage-col">
         <div class="stage" id="stage">
           <div id="preview" class="preview"></div>
-          <p class="stage-hint">tap a flower to change its colour</p>
+          <p class="stage-hint" id="stageHint">tap a flower to change its colour</p>
         </div>
         <div class="chips" id="chips" aria-label="Flowers in your bouquet"></div>
-        <div class="stage-actions">
+        <div class="stage-actions" id="stageActions">
           <button class="btn ghost small" id="shuffleBtn">surprise me 🎲</button>
           <button class="btn ghost small" id="clearBtn">start over</button>
         </div>
       </div>
 
       <div class="controls">
-        <div class="card panel">
+        <div class="card panel lotus-panel" id="lotusPanel" hidden>
+          <h2><span class="num">🪷</span> you found the secret lotus</h2>
+          <p class="muted">it arrives closed, floating on a pond at dusk. they tap it, the petals open one layer at a time, and only then does your note appear.</p>
+          <div class="row">
+            <span class="row-label">colour</span>
+            <div class="swatches" id="lotusColor"></div>
+          </div>
+          <button type="button" class="btn ghost small" id="lotusExit">back to a bouquet</button>
+        </div>
+
+        <div class="card panel" id="bloomPanel">
           <h2><span class="num">1</span> pick your blooms <small id="stemCount"></small></h2>
           <div class="palette" id="palette"></div>
           <label class="check"><input type="checkbox" id="greenery"> add greenery</label>
         </div>
 
-        <div class="card panel">
+        <div class="card panel" id="wrapPanel">
           <h2><span class="num">2</span> wrap it</h2>
           <div class="row">
             <span class="row-label">style</span>
@@ -137,11 +147,28 @@
             <label>from<input id="fromName" maxlength="30" placeholder="you" autocomplete="off"></label>
           </div>
           <label>your note
-            <textarea id="msg" maxlength="280" rows="4" placeholder="say the thing you'd normally just think…"></textarea>
+            <textarea id="msg" maxlength="560" rows="5" placeholder="say the thing you'd normally just think…"></textarea>
           </label>
           <div class="msg-foot">
             <div class="starters" id="starters"></div>
-            <span class="count" id="msgCount">0/280</span>
+            <span class="count" id="msgCount">0/560</span>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <h2><span class="num">4</span> make it special <small>optional</small></h2>
+          <label for="atDate">seal it until <span class="opt">· they see a countdown, not the flowers</span></label>
+          <div class="inline">
+            <input id="atDate" type="date">
+            <button type="button" class="btn ghost small" id="atClear">clear</button>
+          </div>
+          <label class="check"><input type="checkbox" id="lockOn"> lock the note with a passcode 🔐</label>
+          <div id="lockFields" class="lock-fields" hidden>
+            <div class="two">
+              <label>passcode<input id="pw" maxlength="40" placeholder="only they'd know" autocomplete="off" autocapitalize="off"></label>
+              <label>hint <span class="opt">(optional)</span><input id="hint" maxlength="40" placeholder="our first concert" autocomplete="off"></label>
+            </div>
+            <p class="small-note">not case-sensitive. we never see it and can't recover it, so tell them separately.</p>
           </div>
         </div>
 
@@ -174,6 +201,11 @@
       <ul class="dates" id="dates"></ul>
     </div>
 
+    <div id="waitWrap" hidden>
+      <h2 class="section-title">sealed &amp; on the way <span class="tag">no peeking</span></h2>
+      <div class="shelf" id="waitShelf"></div>
+    </div>
+
     <h2 class="section-title">received</h2>
     <div class="shelf" id="recvShelf"></div>
 
@@ -187,6 +219,16 @@
 <!-- ───────────── RECEIVE ───────────── -->
 <div id="receive" class="receive" hidden>
   <div class="receive-inner">
+    <div id="sealed" class="gift" hidden>
+      <p class="gift-to" id="sealedTo"></p>
+      <div class="envelope sealed-env" aria-hidden="true"><span class="env-flap"></span><span class="wax">🔒</span></div>
+      <p class="gift-hint">opens <b id="sealedDate"></b></p>
+      <div class="countdown" id="countdown" role="timer"></div>
+      <div class="recv-actions">
+        <button class="btn primary" id="sealedOkBtn">ok, i'll come back</button>
+        <button class="btn ghost" id="peekBtn">peek inside (preview only)</button>
+      </div>
+    </div>
     <div id="gift" class="gift">
       <p class="gift-to" id="giftTo"></p>
       <button class="envelope" id="unwrapBtn" aria-label="Unwrap your bouquet">
@@ -195,17 +237,43 @@
       </button>
       <p class="gift-hint">tap to unwrap</p>
     </div>
+    <form id="lockbox" class="gift lockbox" hidden>
+      <p class="gift-to">the note is locked 🔐</p>
+      <p class="hint-text" id="hintText"></p>
+      <input id="passIn" autocomplete="off" autocapitalize="off" placeholder="passcode" aria-label="Passcode" required>
+      <button class="btn primary big">unlock</button>
+      <p class="muted">don't know it? ask whoever sent this.</p>
+    </form>
     <div id="opened" class="opened" hidden>
+      <p class="lotus-hint" id="lotusHint" hidden></p>
       <div id="recvArt" class="recv-art"></div>
       <div class="note" id="recvNote">
         <p class="note-to" id="noteTo"></p>
         <p class="note-msg" id="noteMsg"></p>
         <p class="note-from" id="noteFrom"></p>
       </div>
+      <div class="react" id="reactBox">
+        <p class="react-q">how'd it hit? send a reaction back</p>
+        <div class="react-row" id="reactRow"></div>
+        <form id="reactForm" class="react-form" hidden>
+          <input id="reactText" maxlength="80" placeholder="add a few words (optional)" aria-label="Reply" autocomplete="off">
+          <button class="btn primary">send it</button>
+        </form>
+      </div>
       <div class="recv-actions">
         <button class="btn primary" id="sendBackBtn">send one back 💐</button>
         <button class="btn" id="recvSaveBtn">save pic</button>
         <button class="btn ghost" id="recvCloseBtn">my garden</button>
+      </div>
+    </div>
+    <div id="reaction" class="gift" hidden>
+      <div class="rx-emoji" id="rxEmoji"></div>
+      <p class="gift-to" id="rxTitle"></p>
+      <p class="rx-text" id="rxText"></p>
+      <div class="rx-art" id="rxArt"></div>
+      <div class="recv-actions">
+        <button class="btn primary" id="rxBackBtn">send them another 💐</button>
+        <button class="btn ghost" id="rxGardenBtn">my garden</button>
       </div>
     </div>
   </div>
@@ -214,9 +282,10 @@
 
 <!-- ───────────── SHARE ───────────── -->
 <dialog id="shareDlg" class="dlg">
-  <h2>it's wrapped 🎀</h2>
-  <p class="muted">send this link — they'll unwrap it when they open it.</p>
+  <h2 id="shareTitle">it's wrapped 🎀</h2>
+  <p class="muted" id="shareSub">send this link — they'll unwrap it when they open it.</p>
   <input id="shareLink" readonly aria-label="Share link">
+  <ul class="share-notes" id="shareNotes" hidden></ul>
   <div class="share-grid">
     <button class="btn primary" id="copyBtn">copy link</button>
     <button class="btn" id="nativeShareBtn">share…</button>
